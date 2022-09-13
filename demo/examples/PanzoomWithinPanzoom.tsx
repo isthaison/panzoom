@@ -45,14 +45,33 @@ export default function PanzoomWithinPanzoom() {
   let panzoom2 = panzoom2Ref.current
   useEffect(() => {
     panzoom = panzoomRef.current = Panzoom(elem.current)
+
+    elem && elem.current.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
+
+
     panzoom2 = panzoom2Ref.current = Panzoom(elemTwo.current, {
+      contain: 'inside',
+
       setTransform: (
         _elem: HTMLElement,
-        { x, y, scale }: { x: number; y: number; scale: number }
+        {
+
+          x, y,
+
+          scale,
+        }
+          : {
+            x: number; y: number;
+            scale: number,
+
+          }
       ) => {
-        // Adjust the panning according to the parent's scale
         const parentScale = panzoom.getScale()
-        panzoom2.setStyle(
+
+
+
+
+        panzoom2 && panzoom2.setStyle(
           'transform',
           `scale(${scale}) translate(${x / parentScale}px, ${y / parentScale}px)`
         )
@@ -69,7 +88,6 @@ export default function PanzoomWithinPanzoom() {
     }
     const newScale = panzoom.getScale()
     const pan = panzoom2.getPan()
-    // Adjust child starting X/Y according the new scale for panning
     panzoom2.pan((pan.x / oldScale) * newScale, (pan.y / oldScale) * newScale, {
       animate: true
     })
@@ -97,25 +115,15 @@ export default function PanzoomWithinPanzoom() {
           className="panzoom"
           ref={elem}
           style={{
-            width: '400px',
-            border: '2px dotted',
-            margin: '0 auto'
+
           }}
         >
           <div
+            className='elemTwo'
             ref={elemTwo}
-            style={{
-              width: '200px',
-              margin: '0 auto',
-              padding: 20,
-              backgroundColor: '#33DDDD',
-              border: '1px solid #000000',
-              color: 'black',
-              textAlign: 'center'
-            }}
+
           >
-            This is a Panzoom element within another Panzoom element. See example code for panning
-            within a zoomed parent.
+
           </div>
           <img style={{ width: '100%', height: '100%' }} src="awesome_tiger.svg" />
         </div>
